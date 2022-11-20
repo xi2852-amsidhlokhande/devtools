@@ -27,7 +27,7 @@ spec:
           - name: sonar.jdbc.username
             value: "postgres"
           - name: sonar.jdbc.url
-            value: "jdbc:postgresql://10.96.227.213:5432/sonarqube"
+            value: "jdbc:postgresql://postgres:5432/postgresdb"
           - name: sonar.jdbc.password
             value: "root"
         ports:
@@ -71,4 +71,4 @@ spec:
       - name: sonar
         port: 9000
         nodePort: 30009
-    type: NodePort
+    type: LoadBalancer

@@ -16,16 +16,16 @@ spec:
       containers:
       - name: sonarqube
         image: sonarqube:latest
-        env:
-          - name: "SONARQUBE_JDBC_USERNAME"
-            value: "postgres"
-          - name: "SONARQUBE_JDBC_URL"
-            value: "jdbc:postgresql://10.96.134.13:5432/sonarqube"
-          - name: "SONARQUBE_JDBC_PASSWORD"
-            value: "root"
         ports:
-          - containerPort: 9000
-            protocol: TCP
+          - name: sonarport
+            containerPort: 9000
+        env:
+        - name: "SONARQUBE_JDBC_USERNAME"
+          value: "postgres"
+        - name: "SONARQUBE_JDBC_URL"
+          value: "jdbc:postgresql://postgres:5432/postgres"
+        - name: "SONARQUBE_JDBC_PASSWORD"
+          value: "root"
         volumeMounts:
         - mountPath: /opt/sonarqube/data/
           name: sonar-data
@@ -38,26 +38,15 @@ spec:
       - name: sonar-extensions
         persistentVolumeClaim:
             claimName: sonar-extensions
-        # resources:
-        #   requests:
-        #     cpu: 2000m
-        #     memory: 2048Mi
-        #   limits:
-        #     cpu: 6000m
-        #     memory: 4096Mi
-       
-        
-    
 ---
 apiVersion: v1
 kind: Service
 metadata:
     name: sonarqube
 spec:
-    selector: 
-       app: sonarqube
-    ports:
-      - name: sonar
-        port: 9000
-        nodePort: 30009
-    type: NodePort
+  ports:
+    - name: sonarport
+      port: 9000
+  selector:
+    app: sonarqube
+  type: LoadBalancer
